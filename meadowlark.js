@@ -20,12 +20,13 @@ app.get('/', handlers.home) //loads home page
 
 app.get('/about', handlers.about) //loads about page
 
+  //sends hidden information on the header object
 app.get('/headers', (req, res) => {
 
   res.type('text/plain')
-  const headers = Object.entries(req.headers)
+  const headers = Object.entries(req.headers) //turns header object into an array
                   .map(([key, value]) => `${key}: ${value}`)
-  res.send(headers.join('\n'))
+  res.send(headers.join('\n')) //after each key/value line break
 
 })
 
