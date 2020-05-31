@@ -8,6 +8,8 @@ const port = process.env.PORT || 3000 //sets the default port
 
 const app = express()
 
+app.disable('x-powered-by') //disables giving hackers information about the server.
+
 app.use(express.static(__dirname + '/public')) //allows express to server static files
 
 // configure Handlebars view engine
@@ -40,7 +42,7 @@ if(require.main === module) {
   app.listen(port, () => {
     console.log( `Express started on http://localhost:${port}` +
       '; press Ctrl-C to terminate.' )
-  }) 
+  }) //on this port console.log that express server has started
 } else {
   module.exports = app
 }
