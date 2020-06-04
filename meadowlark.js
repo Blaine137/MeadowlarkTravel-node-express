@@ -13,9 +13,19 @@ app.disable('x-powered-by') //disables giving hackers information about the serv
 
 app.use(express.static(__dirname + '/public')) //allows express to server static files
 
-// configure Handlebars view engine
+  // configure Handlebars view engine
 app.engine('handlebars', expressHandlebars({
+  
   defaultLayout: 'main',
+  helpers: {
+    section: function(name, options){
+
+      if(!this._sections) this._sections = {}
+      this.sections[name] = options.fn(this)
+      return null
+    },
+  },
+
 }))
 app.set('view engine', 'handlebars')
 
