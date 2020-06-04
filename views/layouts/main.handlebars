@@ -2,11 +2,17 @@
 <html>
   <head>
     <title>Meadowlark Travel</title>
+    {{{_sections.head}}}
   </head>
   <body>
     <header>
       <img src="/img/logo.png" alt="Meadowlark Travel Logo">
     </header>
-    {{{body}}}
+    <div class="container">
+      {{! this is a comment using handlebars, can put html before/after the body variable}}
+      {{{body}}}
+      {{{_sections.scripts}}}
+    </div>
+    <footer>&copy; 2019 Meadowlark Travel</footer>
   </body>
 </html>
