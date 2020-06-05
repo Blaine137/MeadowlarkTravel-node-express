@@ -1,25 +1,14 @@
-    //express documentation ---- http://expressjs.com/api.html
-const express = require('express') //imports express
+const express = require('express')
+const expressHandlebars = require('express-handlebars')
 
-const expressHandlebars = require('express-handlebars') //imports handlerbars for express
-
-const handlers = require('./lib/handlers') //imports handlers.js 
-
-const weatherMiddleware = require('./lib/middleware/weather') //imports weather.js
-
-const port = process.env.PORT || 3000 //sets the default port
+const handlers = require('./lib/handlers')
+const weatherMiddleware = require('./lib/middleware/weather')
 
 const app = express()
 
-app.disable('x-powered-by') //disables giving hackers information about the server.
-
-app.use(express.static(__dirname + '/public')) //allows express to server static files
-
-app.use(weatherMiddleware)
-
-  // configure Handlebars view engine
+// configure Handlebars view engine
 app.engine('handlebars', expressHandlebars({
-  defaultLayout: 'main',
+  defaultLayout: 'main', //uses main.handlebars as the layout for all views
   helpers: {
     section: function(name, options) {
       if(!this._sections) this._sections = {}
@@ -27,37 +16,26 @@ app.engine('handlebars', expressHandlebars({
       return null
     },
   },
-})) 
+}))
+app.set('view engine', 'handlebars') //tells express to use handlebars
 
-app.set('view engine', 'handlebars')
+const port = process.env.PORT || 3000 //sets the port
 
-app.get('/', handlers.home) //loads home page
+app.use(express.static(__dirname + '/public'))
 
-app.get('/section-test', handlers.sectionTest)
+app.use(weatherMiddleware)
 
-app.get('/about', handlers.about) //loads about page
+app.get('/', handlers.home) //loads the home.handlebars page
+app.get('/section-test', handlers.sectionTest) //loads section-test.handlebars
 
-  //sends hidden information on the header object
-app.get('/headers', (req, res) => {
-
-  res.type('text/plain')
-  const headers = Object.entries(req.headers) //turns header object into an array
-                  .map(([key, value]) => `${key}: ${value}`)
-  res.send(headers.join('\n')) //after each key/value line break
-
-})
-
-// custom 404 page
-app.use(handlers.notFound) //loads 404 error page
-
-// custom 500 page
+app.use(handlers.notFound) //loads 404 page
 app.use(handlers.serverError) //loads 500 page
 
 if(require.main === module) {
   app.listen(port, () => {
     console.log( `Express started on http://localhost:${port}` +
       '; press Ctrl-C to terminate.' )
-  }) //on this port console.log that express server has started
+  })
 } else {
   module.exports = app
 }
