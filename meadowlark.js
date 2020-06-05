@@ -5,6 +5,8 @@ const expressHandlebars = require('express-handlebars') //imports handlerbars fo
 
 const handlers = require('./lib/handlers') //imports handlers.js 
 
+const weatherMiddleware = require('./lib/middleware/weather') //imports weather.js
+
 const port = process.env.PORT || 3000 //sets the default port
 
 const app = express()
@@ -13,23 +15,25 @@ app.disable('x-powered-by') //disables giving hackers information about the serv
 
 app.use(express.static(__dirname + '/public')) //allows express to server static files
 
+app.use(weatherMiddleware)
+
   // configure Handlebars view engine
 app.engine('handlebars', expressHandlebars({
-  
   defaultLayout: 'main',
   helpers: {
-    section: function(name, options){
-
+    section: function(name, options) {
       if(!this._sections) this._sections = {}
-      this.sections[name] = options.fn(this)
+      this._sections[name] = options.fn(this)
       return null
     },
   },
+})) 
 
-}))
 app.set('view engine', 'handlebars')
 
 app.get('/', handlers.home) //loads home page
+
+app.get('/section-test', handlers.sectionTest)
 
 app.get('/about', handlers.about) //loads about page
 
