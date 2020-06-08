@@ -4,6 +4,10 @@ const expressHandlebars = require('express-handlebars')
 const handlers = require('./lib/handlers')
 const weatherMiddleware = require('./lib/middleware/weather')
 
+const bodyParser = require('body-parser')
+
+
+
 const app = express()
 
 // configure Handlebars view engine
@@ -24,6 +28,12 @@ const port = process.env.PORT || 3000 //sets the port
 app.use(express.static(__dirname + '/public'))
 
 app.use(weatherMiddleware)
+
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+
+app.get('/newsletter', handlers.newsletter)
+app.post('/api/newsletter-signup', handlers.api.newsletterSignup)
 
 app.get('/', handlers.home) //loads the home.handlebars page
 app.get('/section-test', handlers.sectionTest) //loads section-test.handlebars
