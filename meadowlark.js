@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser')
 const { credentials } = require('./config')
 const handlers = require('./lib/handlers')
 const weatherMiddlware = require('./lib/middleware/weather')
+const expressSession = require('express-session')
+const flashMiddleware = require('./lib/middleware/flash')
 
 const app = express()
 
@@ -21,6 +23,14 @@ app.engine('handlebars', expressHandlebars({
   },
 }))
 app.set('view engine', 'handlebars')
+
+app.use(expressSession({
+  resave: false,
+  saveUninitialized: false,
+  secret: credentials.cookieSecret,
+}))
+
+app.use(flashMiddleware)
 
 app.use(cookieParser(credentials.cookieSecret))
 
